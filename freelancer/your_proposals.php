@@ -5,9 +5,14 @@ if (!$userObj->isLoggedIn()) {
   header("Location: login.php");
 }
 
-if ($userObj->isAdmin()) {
+if (!$userObj->isFreelancer()) {
   header("Location: ../client/index.php");
-}  
+} 
+$categories = $categoryObj->getCategories();
+$allSubcategories = [];
+foreach ($categories as $cat) {
+    $allSubcategories[$cat['category_id']] = $categoryObj->getSubcategories($cat['category_id']);
+}
 ?>
 
 <!doctype html>
@@ -20,6 +25,8 @@ if ($userObj->isAdmin()) {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <style>
       body {
         font-family: "Arial";
@@ -55,6 +62,28 @@ if ($userObj->isAdmin()) {
             <div class="card-body">
               <h2><a href="#"><?php echo $proposal['username']; ?></a></h2>
               <img src="<?php echo "../images/".$proposal['image']; ?>" class="img-fluid" alt="">
+              <p class="mt-4">
+                <?php
+                  // Display category name
+                  $catId = $proposal['category_id'];
+                  echo isset($categories) && isset($catId) && isset($categories[array_search($catId,array_column($categories, 'category_id'))])
+                    ? htmlspecialchars($categories[array_search($catId, array_column($categories, 'category_id'))]['category_name'])
+                      : 'Unknown Category';
+
+                    // Display subcategory name
+                    $subcatId = $proposal['subcategory_id'];
+                    $subcatName = 'Unknown Subcategory';
+                    if (isset($allSubcategories[$catId])) {
+                      foreach ($allSubcategories[$catId] as $subcat) {
+                        if ($subcat['subcategory_id'] == $subcatId) {
+                          $subcatName = $subcat['subcategory_name'];
+                          break;
+                        }
+                      }
+                    }
+                    echo " - " . htmlspecialchars($subcatName);
+                  ?>
+              </p>
               <p class="mt-4"><i><?php echo $proposal['proposals_date_added']; ?></i></p>
               <p class="mt-2"><?php echo $proposal['description']; ?></p>
               <h4><i><?php echo number_format($proposal['min_price']) . " - " . number_format($proposal['max_price']);?></i></h4>

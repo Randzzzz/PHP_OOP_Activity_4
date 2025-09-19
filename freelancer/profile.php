@@ -4,9 +4,9 @@ if (!$userObj->isLoggedIn()) {
   header("Location: login.php");
 }
 
-if ($userObj->isAdmin()) {
+if (!$userObj->isFreelancer()) {
   header("Location: ../client/index.php");
-}  
+} 
 ?>
 <!doctype html>
   <html lang="en">
@@ -18,6 +18,8 @@ if ($userObj->isAdmin()) {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <style>
       body {
         font-family: "Arial";

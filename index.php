@@ -44,6 +44,16 @@
             </div>
           </div>
         </div>
+        <div class="col-md-6 offset-md-3">
+          <div class="card shadow">
+            <div class="card-body">
+              <h1>Are you looking for a talent and want to manage this site?</h1>
+              <img src="https://images.unsplash.com/photo-1714646183977-26bca1f74af5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="img-fluid">
+              <p>Administrators can manage categories and subcategories for proposals, as well as submit offers just like clients.</p>
+              <h3><a href="client/admin/login.php">Get started here as administrator</a></h3>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="display-4 text-center mt-4">Testimonials From Users</div>
       <div class="row justify-content-center">

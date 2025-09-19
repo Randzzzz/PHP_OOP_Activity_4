@@ -17,6 +17,27 @@
       <li class="nav-item">
         <a class="nav-link" href="offers_from_clients.php">Offers From Clients</a>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="offers_from_clients.php" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Categories
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <?php
+          $categories = $categoryObj->getCategories();
+          foreach ($categories as $cat) {
+            // Category link
+            echo '<a class="dropdown-item font-weight-bold" href="offers_from_clients.php?category_id=' . $cat['category_id'] . '">' . htmlspecialchars($cat['category_name']) . '</a>';
+            $subcategories = $categoryObj->getSubcategories($cat['category_id']);
+            if ($subcategories && count($subcategories) > 0) {
+              foreach ($subcategories as $subcat) {
+                echo '<a class="dropdown-item pl-4" href="offers_from_clients.php?category_id=' . $cat['category_id'] . '&subcategory_id=' . $subcat['subcategory_id'] . '">' . htmlspecialchars($subcat['subcategory_name']) . '</a>';
+              }
+            }
+            echo '<div class="dropdown-divider"></div>';
+          }
+          ?>
+        </div>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="core/handleForms.php?logoutUserBtn=1">Logout</a>
       </li>

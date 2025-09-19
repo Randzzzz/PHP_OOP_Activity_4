@@ -9,35 +9,29 @@ if (isset($_POST['insertNewUserBtn'])) {
 	$confirm_password = trim($_POST['confirm_password']);
 
 	if (!empty($username) && !empty($email) && !empty($password) && !empty($confirm_password)) {
-
 		if ($password == $confirm_password) {
 
 			if (!$userObj->usernameExists($username)) {
-
-				if ($userObj->registerUser($username, $email, $password, $contact_number)) {
+				// Register as client
+				$role = 'client';
+				if ($userObj->registerUser($username, $email, $password, $role, $contact_number)) {
 					header("Location: ../login.php");
-				}
-
-				else {
+				} else {
 					$_SESSION['message'] = "An error occured with the query!";
 					$_SESSION['status'] = '400';
 					header("Location: ../register.php");
 				}
-			}
-
-			else {
+			} else {
 				$_SESSION['message'] = $username . " as username is already taken";
 				$_SESSION['status'] = '400';
 				header("Location: ../register.php");
 			}
-		}
-		else {
+		} else {
 			$_SESSION['message'] = "Please make sure both passwords are equal";
 			$_SESSION['status'] = '400';
 			header("Location: ../register.php");
 		}
-	}
-	else {
+	} else {
 		$_SESSION['message'] = "Please make sure there are no empty input fields";
 		$_SESSION['status'] = '400';
 		header("Location: ../register.php");
@@ -49,23 +43,22 @@ if (isset($_POST['loginUserBtn'])) {
 	$password = trim($_POST['password']);
 
 	if (!empty($email) && !empty($password)) {
-
-		if ($userObj->loginUser($email, $password)) {
+		$user = $userObj->getUserByEmailAndRole($email, 'client');
+		if ($user && password_verify($password, $user['password'])) {
+			$_SESSION['user_id'] = $user['user_id'];
+			$_SESSION['username'] = $user['username'];
+			$_SESSION['role'] = $user['role'];
 			header("Location: ../index.php");
-		}
-		else {
+		} else {
 			$_SESSION['message'] = "Username/password invalid";
 			$_SESSION['status'] = "400";
 			header("Location: ../login.php");
 		}
-	}
-
-	else {
+	} else {
 		$_SESSION['message'] = "Please make sure there are no empty input fields";
 		$_SESSION['status'] = '400';
 		header("Location: ../login.php");
 	}
-
 }
 
 if (isset($_GET['logoutUserBtn'])) {

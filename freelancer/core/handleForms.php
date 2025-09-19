@@ -13,31 +13,25 @@ if (isset($_POST['insertNewUserBtn'])) {
 		if ($password == $confirm_password) {
 
 			if (!$userObj->usernameExists($username)) {
-
-				if ($userObj->registerUser($username, $email, $password, $contact_number)) {
+				$role = 'freelancer';
+				if ($userObj->registerUser($username, $email, $password, $role, $contact_number)) {
 					header("Location: ../login.php");
-				}
-
-				else {
+				} else {
 					$_SESSION['message'] = "An error occured with the query!";
 					$_SESSION['status'] = '400';
 					header("Location: ../register.php");
 				}
-			}
-
-			else {
+			} else {
 				$_SESSION['message'] = $username . " as username is already taken";
 				$_SESSION['status'] = '400';
 				header("Location: ../register.php");
 			}
-		}
-		else {
+		} else {
 			$_SESSION['message'] = "Please make sure both passwords are equal";
 			$_SESSION['status'] = '400';
 			header("Location: ../register.php");
 		}
-	}
-	else {
+	} else {
 		$_SESSION['message'] = "Please make sure there are no empty input fields";
 		$_SESSION['status'] = '400';
 		header("Location: ../register.php");
@@ -49,23 +43,22 @@ if (isset($_POST['loginUserBtn'])) {
 	$password = trim($_POST['password']);
 
 	if (!empty($email) && !empty($password)) {
-
-		if ($userObj->loginUser($email, $password)) {
+		$user = $userObj->getUserByEmailAndRole($email, 'freelancer');
+		if ($user && password_verify($password, $user['password'])) {
+			$_SESSION['user_id'] = $user['user_id'];
+			$_SESSION['username'] = $user['username'];
+			$_SESSION['role'] = $user['role'];
 			header("Location: ../index.php");
-		}
-		else {
+		} else {
 			$_SESSION['message'] = "Username/password invalid";
 			$_SESSION['status'] = "400";
 			header("Location: ../login.php");
 		}
-	}
-
-	else {
+	} else {
 		$_SESSION['message'] = "Please make sure there are no empty input fields";
 		$_SESSION['status'] = '400';
 		header("Location: ../login.php");
 	}
-
 }
 
 if (isset($_GET['logoutUserBtn'])) {
@@ -110,6 +103,8 @@ if (isset($_POST['insertNewProposalBtn'])) {
 	$description = htmlspecialchars($_POST['description']);
 	$min_price = htmlspecialchars($_POST['min_price']);
 	$max_price = htmlspecialchars($_POST['max_price']);
+	$category_id = $_POST['category_id'];
+  $subcategory_id = $_POST['subcategory_id'];
 
 	// Get file name
 	$fileName = $_FILES['image']['name'];
@@ -135,7 +130,7 @@ if (isset($_POST['insertNewProposalBtn'])) {
 
 	// Move file to the specified path 
 	if (move_uploaded_file($tempFileName, $folder)) {
-		if ($proposalObj->createProposal($user_id, $description, $imageName, $min_price, $max_price)) {
+		if ($proposalObj->createProposal($user_id, $description, $imageName, $min_price, $max_price, $category_id, $subcategory_id)) {
 			$_SESSION['status'] = "200";
 			$_SESSION['message'] = "Proposal saved successfully!";
 			header("Location: ../index.php");

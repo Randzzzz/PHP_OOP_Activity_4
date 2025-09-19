@@ -11,9 +11,9 @@ class Proposal extends Database {
      * @param int $author_id The ID of the author.
      * @return int The ID of the newly created Proposal.
      */
-    public function createProposal($user_id, $description, $image, $min_price, $max_price) {
-        $sql = "INSERT INTO Proposals (user_id, description, image, min_price, max_price) VALUES (?, ?, ?, ?, ?)";
-        return $this->executeNonQuery($sql, [$user_id, $description, $image, $min_price, $max_price]);
+    public function createProposal($user_id, $description, $image, $min_price, $max_price, $category_id, $subcategory_id) {
+        $sql = "INSERT INTO Proposals (user_id, description, image, min_price, max_price, category_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return $this->executeNonQuery($sql, [$user_id, $description, $image, $min_price, $max_price, $category_id, $subcategory_id]);
     }
 
     /**

@@ -38,39 +38,28 @@ class User extends Database {
      * @param string $username The user's username.
      * @param string $email The user's email.
      * @param string $password The user's password.
-     * @param bool $is_admin Whether the user is an admin.
+     * @param string $role The user's role (client, freelancer, administrator).
+     * @param string $contact_number The user's contact number.
      * @return bool True on success, false on failure.
      */
-    public function registerUser($username, $email, $password, $contact_number, $is_client = 0) {
+    public function registerUser($username, $email, $password, $role = 'freelancer', $contact_number = '') {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO fiverr_clone_users (username, email, password, is_client, contact_number) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO fiverr_clone_users (username, email, password, role, contact_number) VALUES (?, ?, ?, ?, ?)";
         try {
-            $this->executeNonQuery($sql, [$username, $email, $hashed_password, $is_client, $contact_number]);
+            $this->executeNonQuery($sql, [$username, $email, $hashed_password, $role, $contact_number]);
             return true;
         } catch (\PDOException $e) {
             return false;
         }
     }
 
-    /**
-     * Logs in a user by verifying credentials.
-     * @param string $email The user's email.
-     * @param string $password The user's password.
-     * @return bool True on success, false on failure.
-     */
-    public function loginUser($email, $password) {
-        $sql = "SELECT user_id, username, password, is_client FROM fiverr_clone_users WHERE email = ?";
-        $user = $this->executeQuerySingle($sql, [$email]);
-
-        if ($user && password_verify($password, $user['password'])) {
-            $this->startSession();
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['is_client'] = (bool)$user['is_client'];
-            return true;
-        }
-        return false;
+    // Get user by email and role
+    public function getUserByEmailAndRole($email, $role) {
+        $sql = "SELECT * FROM fiverr_clone_users WHERE email = ? AND role = ?";
+        return $this->executeQuerySingle($sql, [$email, $role]);
     }
+
+    // loginUser is not needed with new role-based login in handleForms.php
 
     /**
      * Checks if a user is currently logged in.
@@ -87,7 +76,17 @@ class User extends Database {
      */
     public function isAdmin() {
         $this->startSession();
-        return isset($_SESSION['is_client']) && $_SESSION['is_client'];
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'administrator';
+    }
+
+    public function isClient() {
+        $this->startSession();
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'client';
+    }
+
+    public function isFreelancer() {
+        $this->startSession();
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'freelancer';
     }
 
     /**
