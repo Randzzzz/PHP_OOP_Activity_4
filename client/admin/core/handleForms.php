@@ -72,7 +72,6 @@ if (isset($_GET['logoutUserBtn'])) {
 if (isset($_POST['addCategoryBtn'])) {
     $category_name = trim($_POST['category_name']);
     if (!empty($category_name)) {
-        $categoryObj = new Category();
         $categoryObj->addCategory($category_name);
         $_SESSION['message'] = "Category added successfully!";
         $_SESSION['status'] = '200';
@@ -88,7 +87,6 @@ if (isset($_POST['addSubcategoryBtn'])) {
     $category_id = $_POST['category_id'];
     $subcategory_name = trim($_POST['subcategory_name']);
     if (!empty($category_id) && !empty($subcategory_name)) {
-        $categoryObj = new Category();
         $categoryObj->addSubcategory($category_id, $subcategory_name);
         $_SESSION['message'] = "Subcategory added successfully!";
         $_SESSION['status'] = '200';
@@ -104,7 +102,6 @@ if (isset($_POST['editCategoryBtn'])) {
     $category_id = $_POST['category_id'];
     $category_name = trim($_POST['category_name']);
     if (!empty($category_id) && !empty($category_name)) {
-        $categoryObj = new Category();
         $categoryObj->updateCategory($category_id, $category_name);
         $_SESSION['message'] = "Category updated successfully!";
         $_SESSION['status'] = '200';
@@ -119,7 +116,6 @@ if (isset($_POST['editCategoryBtn'])) {
 if (isset($_GET['deleteCategory'])) {
     $category_id = $_GET['deleteCategory'];
     if (!empty($category_id)) {
-        $categoryObj = new Category();
         $categoryObj->deleteCategory($category_id);
         $_SESSION['message'] = "Category deleted successfully!";
         $_SESSION['status'] = '200';
@@ -135,7 +131,6 @@ if (isset($_POST['editSubcategoryBtn'])) {
     $subcategory_id = $_POST['subcategory_id'];
     $subcategory_name = trim($_POST['subcategory_name']);
     if (!empty($subcategory_id) && !empty($subcategory_name)) {
-        $categoryObj = new Category();
         $categoryObj->updateSubcategory($subcategory_id, $subcategory_name);
         $_SESSION['message'] = "Subcategory updated successfully!";
         $_SESSION['status'] = '200';
@@ -150,7 +145,6 @@ if (isset($_POST['editSubcategoryBtn'])) {
 if (isset($_GET['deleteSubcategory'])) {
     $subcategory_id = $_GET['deleteSubcategory'];
     if (!empty($subcategory_id)) {
-        $categoryObj = new Category();
         $categoryObj->deleteSubcategory($subcategory_id);
         $_SESSION['message'] = "Subcategory deleted successfully!";
         $_SESSION['status'] = '200';
@@ -161,3 +155,4 @@ if (isset($_GET['deleteSubcategory'])) {
     header("Location: ../category.php");
     exit();
 }
+
